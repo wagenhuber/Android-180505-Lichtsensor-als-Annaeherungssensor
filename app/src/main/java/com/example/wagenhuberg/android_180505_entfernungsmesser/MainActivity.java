@@ -6,13 +6,17 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
+
+//Hinweis: Dieses Projekt gibt es von Google auch als fertige Library z.B. für Apps die Telefonie implementieren, und dabei den Touch sperren möchten!
 
 public class MainActivity extends Activity implements SensorEventListener {
 
     private Helligkeit helligkeit;
     private TextView textView;
-
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +30,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         helligkeit = new Helligkeit();
 
         textView = findViewById(R.id.helligkeit);
-
+        button = findViewById(R.id.button);
 
     }
 
@@ -46,11 +50,27 @@ public class MainActivity extends Activity implements SensorEventListener {
                 } else if (aenderung > helligkeit.getGroessteAenderung()) {
                     helligkeit.setGroessteAenderung(aenderung);
                 }
-                System.out.println(helligkeit);
+                //System.out.println(helligkeit);
                 textView.setText(helligkeit.toString());
+                if (aenderung < 0.1) {
+                    aktiviereTouchscreen(false, "Touchscreen deaktiviert");
+                } else if (aenderung > 6.5) {
+                aktiviereTouchscreen(true, "Touchscreen aktiviert");
+                }
             }
 
         }
+    }
+
+    private void aktiviereTouchscreen(boolean aktiviere, String message) {
+        if (aktiviere) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+        }
+
+        System.out.println(message);
+
     }
 
     @Override
